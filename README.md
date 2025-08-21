@@ -6,14 +6,5 @@ It integrates **Cowrie honeypot logs**, **machine learning detection**, and **au
 
 ## 📂 Project Structure
 cowrie-ml-firewall/
-│
-├── src/ # Core scripts
-│ ├── parse_and_detect.py # Parses Cowrie logs & ML detection
-│ ├── update_mikrotik.py # Pushes block rules to MikroTik
-│ └── send_alert_email.py # Sends email alerts
-│
-├── dashboard/ # Streamlit dashboard
-│ └── dashboard.py
-│
-├── README.md # Project documentation
-└── requirements.txt # Python dependencies
+src -> parse_and_detect.py, send_alert_email.py, update_mikrotik.py
+dashboard -> dashboard.py
