@@ -11,9 +11,9 @@
     "from email.mime.text import MIMEText\n",
     "\n",
     "def send_email_alert(ip_list):\n",
-    "    sender_email = \"honeypotalerts123@gmail.com\"\n",
-    "    receiver_email = \"honeypotalerts123@gmail.com\"\n",
-    "    app_password = \"jlnugqacawbwxae\"  # Your Gmail app password\n",
+    "    sender_email = " "\n", #create an email id and use it
+    "    receiver_email = " "\n",#copy the same email id
+    "    app_password = " "  #Gmail app password\n"
     "\n",
     "    subject = \"Honeypot Alert: Malicious IPs Detected\"\n",
     "    body = \"The following IPs were detected as malicious:\\n\\n\" + \"\\n\".join(ip_list)\n",
