@@ -4,3 +4,8 @@ joblib
 netmiko
 streamlit
 matplotlib
+
+Need to install cowrie honeypot in linux vm
+setup the src and dashboard in linux directory
+
+Mikrotik router (WinBox)
