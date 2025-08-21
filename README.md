@@ -4,7 +4,7 @@ It integrates **Cowrie honeypot logs**, **machine learning detection**, and **au
 
 ---
 
-## Project Structure
+## Structure
 cowrie-ml-firewall/
 src -> parse_and_detect.py, send_alert_email.py, update_mikrotik.py
 dashboard -> dashboard.py
