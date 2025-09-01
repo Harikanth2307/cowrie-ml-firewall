@@ -42,7 +42,7 @@ bin/cowrie start
 # 8. Status Cowrie
 bin/cowrie status
 
-#9. Stop Cowrie
+# 9. Stop Cowrie
 bin/cowrie stop
 
 ## MikroTik Firewall Rules
