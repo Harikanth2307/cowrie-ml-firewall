@@ -1,85 +1,65 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "d94a4223",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "from netmiko import ConnectHandler\n",
-    "from datetime import datetime\n",
-    "\n",
-    "# MikroTik device configuration\n",
-    "MIKROTIK = {\n",
-    "    \"device_type\": \"mikrotik_routeros\",\n",
-    "    \"host\": " ",   # MikroTik IP\n",
-    "    \"username\": " ",        # MikroTik username\n",
-    "    \"password\": " "      # MikroTik password\n",
-    "}\n",
-    "\n",
-    "# Address list name and log file\n",
-    "address_list_name = \"ML_BLOCKED\"\n",
-    "log_file = \"mikrotik_log.txt\"\n",
-    "\n",
-    "# === Get already blocked IPs ===\n",
-    "def get_blocked_ips(conn):\n",
-    "    output = conn.send_command(f\"/ip firewall address-list print where list={address_list_name}\")\n",
-    "    blocked = []\n",
-    "    for line in output.splitlines():\n",
-    "        if \"address=\" in line:\n",
-    "            parts = line.split()\n",
-    "            for part in parts:\n",
-    "                if part.startswith(\"address=\"):\n",
-    "                    blocked.append(part.split(\"=\")[1])\n",
-    "    return set(blocked)\n",
-    "\n",
-    "# === Block a new IP ===\n",
-    "def block_ip(conn, ip):\n",
-    "    timeout = \"1d\"  # MikroTik format for 1 day\n",
-    "    cmd = f\"/ip firewall address-list add list={address_list_name} address={ip} comment=Blocked_by_ML timeout={timeout}\"\n",
-    "    conn.send_command(cmd)\n",
-    "    log(f\"Blocked IP {ip} for 1 day\")\n",
-    "\n",
-    "# === Logging helper ===\n",
-    "def log(message):\n",
-    "    with open(log_file, \"a\") as f:\n",
-    "        f.write(f\"[{datetime.now()}] {message}\\n\")\n",
-    "\n",
-    "# === Main function ===\n",
-    "def main():\n",
-    "    try:\n",
-    "        with open(\"malicious_ips.txt\") as f:\n",
-    "            malicious_ips = [line.strip() for line in f if line.strip()]\n",
-    "\n",
-    "        if not malicious_ips:\n",
-    "            log(\"No IPs to block.\")\n",
-    "            return\n",
-    "\n",
-    "        conn = ConnectHandler(**MIKROTIK)\n",
-    "        blocked = get_blocked_ips(conn)\n",
-    "\n",
-    "        for ip in malicious_ips:\n",
-    "            if ip not in blocked:\n",
-    "                block_ip(conn, ip)\n",
-    "            else:\n",
-    "                log(f\"Skipped already-blocked IP {ip}\")\n",
-    "\n",
-    "        conn.disconnect()\n",
-    "\n",
-    "    except Exception as e:\n",
-    "        log(f\"ERROR: {e}\")\n",
-    "\n",
-    "if __name__ == \"__main__\":\n",
-    "    main()\n"
-   ]
-  }
- ],
- "metadata": {
-  "language_info": {
-   "name": "python"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
+from netmiko import ConnectHandler
+from datetime import datetime
+
+# MikroTik device configuration
+MIKROTIK = {
+    "device_type": "mikrotik_routeros",
+    "host": "",       # MikroTik IP
+    "username": "",   # MikroTik username
+    "password": ""    # MikroTik password
 }
+
+# Address list name and log file
+address_list_name = "ML_BLOCKED"
+log_file = "mikrotik_log.txt"
+
+# === Get already blocked IPs ===
+def get_blocked_ips(conn):
+    output = conn.send_command(f"/ip firewall address-list print where list={address_list_name}")
+    blocked = []
+    for line in output.splitlines():
+        if "address=" in line:
+            parts = line.split()
+            for part in parts:
+                if part.startswith("address="):
+                    blocked.append(part.split("=")[1])
+    return set(blocked)
+
+# === Block a new IP ===
+def block_ip(conn, ip):
+    timeout = "1d"  # MikroTik format for 1 day
+    cmd = f"/ip firewall address-list add list={address_list_name} address={ip} comment=Blocked_by_ML timeout={timeout}"
+    conn.send_command(cmd)
+    log(f"Blocked IP {ip} for 1 day")
+
+# === Logging helper ===
+def log(message):
+    with open(log_file, "a") as f:
+        f.write(f"[{datetime.now()}] {message}\n")
+
+# === Main function ===
+def main():
+    try:
+        with open("malicious_ips.txt") as f:
+            malicious_ips = [line.strip() for line in f if line.strip()]
+
+        if not malicious_ips:
+            log("No IPs to block.")
+            return
+
+        conn = ConnectHandler(**MIKROTIK)
+        blocked = get_blocked_ips(conn)
+
+        for ip in malicious_ips:
+            if ip not in blocked:
+                block_ip(conn, ip)
+            else:
+                log(f"Skipped already-blocked IP {ip}")
+
+        conn.disconnect()
+
+    except Exception as e:
+        log(f"ERROR: {e}")
+
+if __name__ == "__main__":
+    main()

@@ -1,46 +1,26 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "8c07d722",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import smtplib\n",
-    "from email.mime.text import MIMEText\n",
-    "\n",
-    "def send_email_alert(ip_list):\n",
-    "    sender_email = " "\n", #create an email id and use it
-    "    receiver_email = " "\n",#copy the same email id
-    "    app_password = " "  #Gmail app password\n"
-    "\n",
-    "    subject = \"Honeypot Alert: Malicious IPs Detected\"\n",
-    "    body = \"The following IPs were detected as malicious:\\n\\n\" + \"\\n\".join(ip_list)\n",
-    "    body = body.encode(\"utf-8\", errors=\"ignore\").decode(\"utf-8\")\n",
-    "\n",
-    "    # Encode body in UTF-8\n",
-    "    msg = MIMEText(body, _charset=\"utf-8\")\n",
-    "    msg[\"Subject\"] = subject\n",
-    "    msg[\"From\"] = sender_email\n",
-    "    msg[\"To\"] = receiver_email\n",
-    "\n",
-    "    try:\n",
-    "        with smtplib.SMTP(\"smtp.gmail.com\", 587) as server:\n",
-    "            server.starttls()\n",
-    "            server.login(sender_email, app_password)\n",
-    "            server.send_message(msg)\n",
-    "            print(\"Alert email sent successfully!\")\n",
-    "    except Exception as e:\n",
-    "        print(f\"Failed to send email: {e}\")\n"
-   ]
-  }
- ],
- "metadata": {
-  "language_info": {
-   "name": "python"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import smtplib
+from email.mime.text import MIMEText
+
+def send_email_alert(ip_list):
+    sender_email = ""  # use new email id or existing one
+    receiver_email = ""  # receiver email id/ can put the same sender email
+    app_password = ""  # Gmail app password (16-digit from Google) to be safe
+
+    subject = "Honeypot Alert: Malicious IPs Detected"
+    body = "The following IPs were detected as malicious:\n\n" + "\n".join(ip_list)
+    body = body.encode("utf-8", errors="ignore").decode("utf-8")
+
+    # Encode body in UTF-8
+    msg = MIMEText(body, _charset="utf-8")
+    msg["Subject"] = subject
+    msg["From"] = sender_email
+    msg["To"] = receiver_email
+
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(sender_email, app_password)
+            server.send_message(msg)
+            print("Alert email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
